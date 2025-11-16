@@ -1,0 +1,407 @@
+#include <iostream>
+using namespace std;
+
+class DNode
+{
+private:
+    int element;
+    DNode* next_node;
+    DNode* prev_node;
+public:
+    DNode(int i = 0, DNode* n = nullptr, DNode* p = nullptr);
+    int retrieve() const;
+    DNode* next() const;
+    DNode* prev() const;
+
+    void setnext(DNode* n);
+    void setprev(DNode* p);
+    void setelement(int);
+};
+
+DNode::DNode(int i, DNode* n, DNode* p) : element(i), next_node(n), prev_node(p)
+{
+    //empty constructor     
+}
+
+int DNode::retrieve() const
+{
+    return element;
+}
+
+DNode* DNode::next() const
+{
+    return next_node;
+}
+
+DNode* DNode::prev() const
+{
+    return prev_node;
+}
+
+void DNode::setelement(int i)
+{
+    element = i;
+}
+
+void DNode::setnext(DNode* n)
+{
+    next_node = n;
+}
+
+void DNode::setprev(DNode* p)
+{
+    prev_node = p;
+}
+
+class DoublyLinkedList
+{
+private:
+    DNode* list_head;
+    DNode* list_tail;
+public:
+    DoublyLinkedList()
+    {
+        list_head = nullptr;
+        list_tail = nullptr;
+    }
+    bool empty() const;
+    DNode* head() const;
+    DNode* tail() const;
+    int front() const;
+    int end() const;
+    void display() const;
+    void display_reverse() const;
+    int size() const;
+    int count(int) const;
+
+    void push_front(int);
+    int pop_front();
+    void push_end(int);
+    int pop_end();
+    void push_at(int value, int position);
+    int pop_at(int position);
+    void erase(int);
+};
+
+bool DoublyLinkedList::empty() const
+{
+    return (list_head == nullptr);
+}
+
+DNode* DoublyLinkedList::head() const
+{
+    return list_head;
+}
+
+DNode* DoublyLinkedList::tail() const
+{
+    return list_tail;
+}
+
+int DoublyLinkedList::front() const
+{
+    if (empty())
+        throw "Underflow";
+    else
+        return head()->retrieve();
+}
+
+int DoublyLinkedList::end() const
+{
+    if (empty())
+        throw "Underflow";
+    else
+        return tail()->retrieve();
+}
+
+void DoublyLinkedList::push_front(int n)
+{
+    DNode* new_node = new DNode(n, list_head, nullptr);
+
+    if (empty())
+    {
+        list_head = list_tail = new_node;
+    }
+    else
+    {
+        list_head->setprev(new_node);
+        list_head = new_node;
+    }
+}
+
+void DoublyLinkedList::display() const
+{
+    cout << "\nList: ";
+    for (DNode* ptr = head(); ptr != nullptr; ptr = ptr->next())
+    {
+        cout << ptr->retrieve() << "\t";
+    }
+}
+
+void DoublyLinkedList::display_reverse() const
+{
+    cout << "\nList (Reverse): ";
+    for (DNode* ptr = tail(); ptr != nullptr; ptr = ptr->prev())
+    {
+        cout << ptr->retrieve() << "\t";
+    }
+}
+
+int DoublyLinkedList::pop_front()
+{
+    if (empty())
+    {
+        throw "Underflow";
+    }
+
+    int e = front();
+    DNode* ptr = head();
+
+    if (list_head == list_tail) // Only one node
+    {
+        list_head = list_tail = nullptr;
+    }
+    else
+    {
+        list_head = list_head->next();
+        list_head->setprev(nullptr);
+    }
+
+    delete ptr;
+    return e;
+}
+
+int DoublyLinkedList::size() const
+{
+    int node_count = 0;
+    for (DNode* ptr = head(); ptr != nullptr; ptr = ptr->next())
+    {
+        node_count++;
+    }
+    return node_count;
+}
+
+int DoublyLinkedList::count(int n) const
+{
+    int node_count = 0;
+    for (DNode* ptr = head(); ptr != nullptr; ptr = ptr->next())
+    {
+        if (ptr->retrieve() == n)
+            node_count++;
+    }
+    return node_count;
+}
+
+void DoublyLinkedList::push_end(int n)
+{
+    DNode* new_node = new DNode(n, nullptr, list_tail);
+
+    if (empty())
+    {
+        list_head = list_tail = new_node;
+    }
+    else
+    {
+        list_tail->setnext(new_node);
+        list_tail = new_node;
+    }
+}
+
+int DoublyLinkedList::pop_end()
+{
+    if (empty())
+    {
+        throw "Underflow";
+    }
+
+    int e = end();
+    DNode* ptr = tail();
+
+    if (list_head == list_tail) // Only one node
+    {
+        list_head = list_tail = nullptr;
+    }
+    else
+    {
+        list_tail = list_tail->prev();
+        list_tail->setnext(nullptr);
+    }
+
+    delete ptr;
+    return e;
+}
+
+void DoublyLinkedList::push_at(int value, int position)
+{
+    if (position < 0)
+    {
+        throw "Invalid position";
+    }
+
+    if (position == 0)
+    {
+        push_front(value);
+        return;
+    }
+
+    DNode* ptr = head();
+    int current_pos = 0;
+
+    while (ptr != nullptr && current_pos < position - 1)
+    {
+        ptr = ptr->next();
+        current_pos++;
+    }
+
+    if (ptr == nullptr)
+    {
+        throw "Position out of bounds";
+    }
+
+    DNode* new_node = new DNode(value, ptr->next(), ptr);
+
+    if (ptr->next() != nullptr)
+    {
+        ptr->next()->setprev(new_node);
+    }
+    else
+    {
+        list_tail = new_node;
+    }
+
+    ptr->setnext(new_node);
+}
+
+int DoublyLinkedList::pop_at(int position)
+{
+    if (empty())
+    {
+        throw "Underflow";
+    }
+
+    if (position < 0)
+    {
+        throw "Invalid position";
+    }
+
+    if (position == 0)
+    {
+        return pop_front();
+    }
+
+    DNode* ptr = head();
+    int current_pos = 0;
+
+    while (ptr != nullptr && current_pos < position)
+    {
+        ptr = ptr->next();
+        current_pos++;
+    }
+
+    if (ptr == nullptr)
+    {
+        throw "Position out of bounds";
+    }
+
+    int e = ptr->retrieve();
+
+    if (ptr->prev() != nullptr)
+    {
+        ptr->prev()->setnext(ptr->next());
+    }
+
+    if (ptr->next() != nullptr)
+    {
+        ptr->next()->setprev(ptr->prev());
+    }
+    else
+    {
+        list_tail = ptr->prev();
+    }
+
+    delete ptr;
+    return e;
+}
+void DoublyLinkedList::erase(int value) 
+{
+    if (list_head == nullptr) 
+    {
+        return;
+    }
+
+    DNode* current = list_head;
+
+    while (current != nullptr) 
+    {
+        if (current->retrieve() == value) 
+        {
+            DNode* Temp = current;
+
+            
+            if (current->prev() != nullptr)
+            {
+                current->prev()->setnext(current->next());
+            }
+            else {
+                
+                list_head = current->next();
+            }
+
+       
+            if (current->next() != nullptr) {
+                current->next()->setprev(current->prev());
+            }
+            else {
+               
+                list_tail = current->prev();
+            }
+
+            current = current->next();
+            delete Temp;
+        }
+        else {
+            current = current->next();
+        }
+    }
+}
+
+int main()
+{
+    DoublyLinkedList dl;
+
+    dl.push_front(6);
+    dl.push_front(4);
+    dl.push_front(3);
+    dl.push_front(8);
+    dl.push_front(3);
+    dl.push_front(3);
+    dl.display();  // List: 3  3  8  3  4  6
+    dl.display_reverse();  // List (Reverse): 6  4  3  8  3  3
+    cout << "\nSize: " << dl.size();
+
+    dl.push_end(99);
+    dl.display();  // List: 3  3  8  3  4  6  99
+
+    dl.erase(3);
+    dl.display();  // List: 8  4  6  99
+
+    cout << "\nFront: " << dl.front();
+    cout << "\nEnd: " << dl.end();
+
+    cout << "\nPopped from end: " << dl.pop_end();
+    dl.display();  // List: 8  4  6
+
+    dl.push_at(100, 1);
+    dl.display();  // List: 8  100  4  6
+
+    cout << "\nPopped at position 2: " << dl.pop_at(2);
+    dl.display();  // List: 8  100  6
+
+    cout << "\nPopped from front: " << dl.pop_front();
+    dl.display();  // List: 100  6
+
+    cout << "\nFinal size: " << dl.size();
+    cout << "\nEmpty? " << dl.empty();
+
+    return 0;
+}

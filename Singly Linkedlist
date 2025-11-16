@@ -1,0 +1,291 @@
+//Singly Linkedlist
+#include <iostream>
+using namespace std;
+class Node
+{
+private:
+    int element;
+    Node* next_node;
+public:
+    Node(int i = 0, Node* n = nullptr);
+    int retrieve() const;
+    Node* next() const;
+
+    void setnext(Node* n);
+    void setelement(int);
+
+};
+Node::Node(int i, Node* n) : element(i), next_node(n)
+{
+}
+int Node::retrieve() const
+{
+    return element;
+}
+Node* Node::next() const
+{
+    return next_node;
+}
+void Node::setelement(int i)
+{
+    element = i;
+}
+void Node::setnext(Node* n)
+{
+    next_node = n;
+}
+class linkedlist
+{
+private:
+    Node* list_head;
+public:
+    linkedlist()
+    {
+        list_head = nullptr;
+    }
+    bool empty() const;
+    Node* head() const;
+    int front() const;
+    void display() const;
+    int size() const;
+    int count(int) const;
+    int end() const;
+
+    void push_front(int);
+    int pop_front();
+    void push_end(int);
+    int pop_end();
+    void push_at(int value, int position);  // Insert at specific position
+    int pop_at(int position);               // Delete at specific position
+    void erase(int);
+};
+bool linkedlist::empty() const
+{
+    return (list_head == nullptr);
+}
+Node* linkedlist::head() const
+{
+    return list_head;
+}
+int linkedlist::front() const
+{
+    if (empty())
+        throw "Underflow";
+    else
+        return head()->retrieve();
+}
+void linkedlist::push_front(int n)
+{
+    list_head = new Node(n, head());
+}
+void linkedlist::display() const
+{
+    cout << "\nList: ";
+    for (Node* ptr = head(); ptr != nullptr; ptr = ptr->next())
+    {
+        cout << ptr->retrieve() << "\t";
+    }
+}
+int linkedlist::pop_front()
+{
+    if (empty())
+    {
+        throw "Underflow";
+    }
+    int e = front();
+    Node* ptr = head();
+    list_head = list_head->next();
+    delete ptr;
+    ptr = nullptr;
+    return e;
+}
+int linkedlist::size() const
+{
+    int node_count = 0;
+    for (Node* ptr = head(); ptr != nullptr; ptr = ptr->next())
+    {
+        node_count++;
+    }
+    return node_count;
+}
+int linkedlist::count(int n) const
+{
+    int node_count = 0;
+    for (Node* ptr = head(); ptr != nullptr; ptr = ptr->next())
+    {
+        if (ptr->retrieve() == n)
+            node_count++;
+    }
+    return node_count;
+}
+int linkedlist::end() const
+{
+    if (empty())
+        throw "Underflow";
+    Node* ptr;
+    for (ptr = head(); ptr->next() != nullptr; ptr = ptr->next())
+    {
+
+    }
+    return ptr->retrieve();
+}
+
+void linkedlist::push_end(int n)
+{
+    if (empty())
+    {
+        list_head = new Node(n, nullptr);
+        return;
+    }
+
+    Node* ptr;
+    for (ptr = head(); ptr->next() != nullptr; ptr = ptr->next())
+    {
+    }
+    ptr->setnext(new Node(n, nullptr));
+}
+int linkedlist::pop_end()
+{
+    if (empty())
+    {
+        throw "Underflow";
+    }
+
+    if (head()->next() == nullptr)
+    {
+        int e = head()->retrieve();
+        delete list_head;
+        list_head = nullptr;
+        return e;
+    }
+    Node* ptr;
+    for (ptr = head(); ptr->next()->next() != nullptr; ptr = ptr->next())
+    {
+    }
+
+    int e = ptr->next()->retrieve();
+    delete ptr->next();
+    ptr->setnext(nullptr);
+    return e;
+}
+void linkedlist::push_at(int value, int position)
+{
+    if (position < 0)
+    {
+        throw "Invalid position";
+    }
+
+    if (position == 0)
+    {
+        push_front(value);
+        return;
+    }
+    Node* ptr = head();
+    int current_pos = 0;
+
+    while (ptr != nullptr && current_pos < position - 1)
+    {
+        ptr = ptr->next();
+        current_pos++;
+    }
+    Node* new_node = new Node(value, ptr->next());
+    ptr->setnext(new_node);
+}
+int linkedlist::pop_at(int position)
+{
+    if (empty())
+    {
+        throw "Underflow";
+    }
+    if (position < 0)
+    {
+        throw "Invalid position";
+    }
+    if (position == 0)
+    {
+        return pop_front();
+    }
+    Node* ptr = head();
+    int current_pos = 0;
+
+    while (ptr != nullptr && ptr->next() != nullptr && current_pos < position - 1)
+    {
+        ptr = ptr->next();
+        current_pos++;
+    }
+    Node* temp = ptr->next();
+    int e = temp->retrieve();
+    ptr->setnext(temp->next());
+    delete temp;
+    return e;
+}
+void linkedlist::erase(int value) 
+{
+    if (list_head == nullptr) 
+    {
+        return;
+    }
+    while (list_head != nullptr && head()->retrieve() == value)
+    {
+        Node* temp = head();
+        list_head = list_head->next();
+        delete temp;
+    }
+    Node* current = head();
+    while (current != nullptr && current->next() != nullptr)
+    {
+        if (current->next()->retrieve() == value) 
+        {
+            Node* temp = current->next();
+            current->setnext(temp->next());
+            delete temp;
+        }
+        else
+        {
+            current = current->next();
+        }
+    }
+}
+
+int main()
+{
+    linkedlist l;
+    l.push_front(6);
+    l.push_front(4);
+    l.push_front(3);
+    l.push_front(8);
+    l.push_front(3);
+    l.push_front(3);
+    l.display();  
+    cout << "\nSize: " << l.size();
+
+    l.push_end(99);
+    l.display();
+
+    l.erase(3);
+    l.display(); 
+
+    cout << "\nFront: " << l.front();
+    cout << "\nEnd: " << l.end();
+
+    cout << "\nPopped from end: " << l.pop_end();
+    l.display();  
+
+    l.push_at(100, 1);
+    l.display();  
+
+    cout << "\nPopped at position 2: " << l.pop_at(2);
+    l.display();  
+
+    cout << "\nPopped from front: " << l.pop_front();
+    l.display(); 
+
+    cout << "\nFinal size: " << l.size();
+    cout << "\nEmpty? " << l.empty();
+
+    return 0;
+}
+
+
+
+

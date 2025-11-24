@@ -32,7 +32,6 @@ void Node::setelement(int i)
 {
     element = i;
 }
-
 void Node::setnext(Node* n)
 {
     next_node = n;
@@ -64,24 +63,20 @@ public:
     int pop_at(int position);
     void erase(int);
 };
-
 bool CircularLinkedList::empty() const
 {
     return (list_tail == nullptr);
 }
-
 Node* CircularLinkedList::head() const
 {
     if (empty())
         return nullptr;
     return list_tail->next();
 }
-
 Node* CircularLinkedList::tail() const
 {
     return list_tail;
 }
-
 int CircularLinkedList::front() const
 {
     if (empty())
@@ -89,7 +84,6 @@ int CircularLinkedList::front() const
     else
         return head()->retrieve();
 }
-
 int CircularLinkedList::end() const
 {
     if (empty())
@@ -104,7 +98,6 @@ void CircularLinkedList::display() const
         cout << "\nList: Empty";
         return;
     }
-
     cout << "\nList: ";
     Node* ptr = head();
     do
@@ -116,7 +109,7 @@ void CircularLinkedList::display() const
 int CircularLinkedList::count(int n) const
 {
     if (empty())
-        return 0;
+        throw "Underflow";
 
     int node_count = 0;
     Node* ptr = head();
@@ -132,7 +125,7 @@ int CircularLinkedList::count(int n) const
 int CircularLinkedList::size() const
 {
     if (empty())
-        return 0;
+        throw "Underflow";
 
     int node_count = 0;
     Node* ptr = head();
@@ -151,7 +144,7 @@ void CircularLinkedList::push_front(int n)
     if (empty())
     {
         list_tail = new_node;
-        new_node->setnext(new_node);  // Point to itself
+        new_node->setnext(new_node);  
     }
     else
     {
@@ -171,7 +164,7 @@ int CircularLinkedList::pop_front()
     int e = front();
     Node* ptr = head();
 
-    if (head() == tail())  // Only one node
+    if (head() == tail())  
     {
         list_tail = nullptr;
     }
@@ -206,13 +199,13 @@ int CircularLinkedList::pop_end()
         throw "Underflow";
     }
     int e = end();
-    if (head() == tail())  // Only one node
+    if (head() == tail())  
     {
         delete list_tail;
         list_tail = nullptr;
         return e;
     }
-    // Find second-to-last node
+
     Node* ptr = head();
     while (ptr->next() != tail())
     {
@@ -260,7 +253,6 @@ void CircularLinkedList::push_at(int value, int position)
         list_tail = new_node;
     }
 }
-
 int CircularLinkedList::pop_at(int position)
 {
     if (empty())
@@ -288,7 +280,6 @@ int CircularLinkedList::pop_at(int position)
 
         
     }
-
     Node* temp = ptr->next();
     int e = temp->retrieve();
     if (temp == list_tail)
@@ -301,7 +292,6 @@ int CircularLinkedList::pop_at(int position)
 
     return e;
 }
-
 void CircularLinkedList::erase(int value)
 {
     if (empty())
@@ -353,32 +343,26 @@ int main()
     cl.push_front(8);
     cl.push_front(3);
     cl.push_front(3);
-    cl.display();  // List: 3  3  8  3  4  6
+    cl.display(); 
     cout << "\nSize: " << cl.size();
 
     cl.push_end(99);
-    cl.display();  // List: 3  3  8  3  4  6  99
+    cl.display();  
 
     cl.erase(3);
-    cl.display();  // List: 8  4  6  99
+    cl.display(); 
 
     cout << "\nFront: " << cl.front();
     cout << "\nEnd: " << cl.end();
 
     cout << "\nPopped from end: " << cl.pop_end();
-    cl.display();  // List: 8  4  6
+    cl.display(); 
 
     cl.push_at(100, 1);
-    cl.display();  // List: 8  100  4  6
+    cl.display(); 
 
-    cout << "\nPopped at position 2: " << cl.pop_at(2);
-    cl.display();  // List: 8  100  6
 
-    cout << "\nPopped from front: " << cl.pop_front();
-    cl.display();  // List: 100  6
-
-    cout << "\nFinal size: " << cl.size();
-    cout << "\nEmpty? " << cl.empty();
+    
 
     return 0;
 }

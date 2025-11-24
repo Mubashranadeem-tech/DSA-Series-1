@@ -40,14 +40,14 @@ private:
 
 public:
     Stack();
-    ~Stack();
+   
     bool empty() const;
     int top() const;
     int size() const;
     void display() const;
     void push(int value);
     int pop();
-    void clear();
+    
 };
 
 Stack::Stack()
@@ -80,7 +80,8 @@ void Stack::display() const
     if (empty())
     {
         cout << "\nStack: Empty";
-        return;
+        throw "Stack Underflow";
+       
     }
     cout << "\nStack (top to bottom): ";
     for (Node* ptr = top_node; ptr != nullptr; ptr = ptr->next())
@@ -107,13 +108,7 @@ int Stack::pop()
     stack_size--;
     return value;
 }
-void Stack::clear()
-{
-    while (!empty())
-    {
-        pop();
-    }
-}
+
 int main()
 {
     Stack s;
@@ -123,21 +118,18 @@ int main()
     s.push(30);
     s.push(40);
     s.push(50);
-    s.display();  // Stack: 50  40  30  20  10
+    s.display(); 
     cout << "\nSize: " << s.size();
     cout << "\nTop element: " << s.top();
     cout << "\nPopped: " << s.pop();
     cout << "\nPopped: " << s.pop();
-    s.display();  // Stack: 30  20  10
+    s.display(); 
     cout << "\nSize: " << s.size();
     s.push(60);
     s.push(70);
-    s.display();  // Stack: 70  60  30  20  10
-    cout << "\nTop element: " << s.top();
-    cout << "\nEmpty? " << s.empty();
-    s.clear();
-    cout << "\n\nAfter clear:";
-    s.display();
+    s.display();  
+  
+   
     cout << "\nEmpty? " << s.empty();
     cout << "\nSize: " << s.size();
     return 0;

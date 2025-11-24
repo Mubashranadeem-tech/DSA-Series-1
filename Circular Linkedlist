@@ -298,6 +298,8 @@ void CircularLinkedList::erase(int value)
     {
         return;
     }
+    //head node ko check kro
+    //jab tak same value ha jo delete karni ha is may ho sakta ha 2 3 nodes pay same value ho
     while (!empty() && head()->retrieve() == value)
     {
         pop_front();
